@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Birbank — дубль приложения</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Номер в адресе ставит bump.py по времени правки файла: без него браузер
+     показывает старые стили и скрипт из кэша, а разметку берёт новую. -->
+<!-- Ставится на домашний экран и открывается без браузерной обвязки:
+     манифест для Android, мета-теги Apple для iPhone. -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#f4f5f7">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<!-- default: приложение начинается под строкой состояния, не залезая под часы.
+     Саму строку iOS красит фоном страницы — он светлый, поэтому чёрной
+     полосы сверху нет. -->
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Birbank">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="icon" href="img/icon-192.png">
+<link rel="stylesheet" href="styles.css?v=1789687378">
+</head>
+<body>
+
+<!-- Телефон рамкой: на десктопе макет должен читаться как экран телефона,
+     на самом телефоне рамка убирается и остаётся один экран. -->
+<div class="phone">
+
+  <!-- ── 1. Заставка ── -->
+  <section class="screen screen--splash is-on" id="s-splash">
+    <span class="mark-box">
+      <img class="splash__mark" src="img/mark.svg" alt="" aria-hidden="true">
+    </span>
+  </section>
+
+  <!-- ── 2. Заставка с партнёрами ── -->
+  <section class="screen screen--splash" id="s-brands">
+    <span class="mark-box">
+      <img class="splash__mark" src="img/mark.svg" alt="" aria-hidden="true">
+    </span>
+
+    <footer class="splash__foot">
+      <div class="brands">
+        <img class="brands__logo brands__logo--market" src="img/br-birmarket.png" alt="birmarket">
+        <img class="brands__logo brands__logo--m10" src="img/br-m10.png" alt="m10">
+        <img class="brands__logo brands__logo--million" src="img/br-million.png" alt="million">
+      </div>
+      <p class="splash__legal">"Birbank" brendi "Kapital Bank" ASC-nin<br>əmtəə nişanıdır</p>
+      <img class="splash__bir" src="img/br-bir.png" alt="bir">
+    </footer>
+  </section>
+
+  <!-- ── 3. Ввод пароля ── -->
+  <section class="screen screen--pin" id="s-pin">
+    <img class="pin__logo" src="img/logo-birbank.png" width="107" height="28" alt="birbank">
+
+    <span class="avatar avatar--lg" aria-hidden="true"></span>
+    <p class="pin__hi">Axşamınız xeyir</p>
+    <h1 class="pin__name">Məmmədli Naiq</h1>
+
+    <div class="pin__dots" id="pin-dots" role="status" aria-label="Daxil edilmiş rəqəmlər">
+      <i></i><i></i><i></i><i></i>
+    </div>
+
+    <div class="keypad" id="keypad">
+      <button type="button" class="key" data-key="1" style="left:37px;top:525px">1</button>
+      <button type="button" class="key" data-key="2" style="left:165px;top:525px">2</button>
+      <button type="button" class="key" data-key="3" style="left:293px;top:525px">3</button>
+      <button type="button" class="key" data-key="4" style="left:37px;top:600px">4</button>
+      <button type="button" class="key" data-key="5" style="left:165px;top:600px">5</button>
+      <button type="button" class="key" data-key="6" style="left:293px;top:600px">6</button>
+      <button type="button" class="key" data-key="7" style="left:37px;top:675px">7</button>
+      <button type="button" class="key" data-key="8" style="left:165px;top:675px">8</button>
+      <button type="button" class="key" data-key="9" style="left:293px;top:675px">9</button>
+      <button type="button" class="key key--help">Daxil ola<br>bilmirəm</button>
+      <button type="button" class="key key--zero" data-key="0">0</button>
+      <button type="button" class="key key--del" data-key="del" aria-label="Sil">
+        <svg viewBox="0 0 28 20" aria-hidden="true">
+          <path d="M9 1h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H9L1 10Z"/>
+          <path d="M13 7l7 6M20 7l-7 6" class="x"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── 4. Главный экран ── -->
+  <section class="screen screen--main" id="s-main">
+    <div class="main__scroll">
+
+      <header class="topbar">
+        <img class="tb__avatar" src="img/tb-avatar.png" width="37" height="36" alt="">
+        <button type="button" class="icon-btn tb__eye" aria-label="Balansı gizlət">
+          <img src="img/tb-eye.png" width="25" height="22" alt="">
+        </button>
+        <label class="search">
+          <img src="img/tb-search.png" width="17" height="17" alt="">
+          <input type="text" placeholder="Axtar" aria-label="Axtar">
+        </label>
+        <button type="button" class="icon-btn tb__bell" aria-label="Bildirişlər">
+          <img src="img/tb-bell.png" width="22" height="24" alt="">
+        </button>
+        <button type="button" class="icon-btn tb__chat" aria-label="Çat">
+          <img src="img/tb-chat.png" width="28" height="25" alt="">
+        </button>
+      </header>
+
+      <!-- Истории. Лента уезжает за поля, поэтому четвёртая выглядывает краем -->
+      <div class="stories">
+        <article class="story"><span class="story__ring story__ring--a"></span><p>İnvestorun gözündə</p></article>
+        <article class="story"><span class="story__ring story__ring--b"><b class="story__badge">2% keşbek</b></span><p>Qazanc əldə et</p></article>
+        <article class="story"><span class="story__ring story__ring--c"></span><p>Bu gündən yığ</p></article>
+        <article class="story story--sm"><span class="story__ring story__ring--d"></span><p>Bilik Günü mübarək</p></article>
+      </div>
+
+      <div class="counters">
+        <span class="counter"><img src="img/chip-miles.png" width="22" height="22" alt="" aria-hidden="true"><span class="counter__val">1,57</span></span>
+        <span class="counter counter--gem"><img src="img/chip-gem.png" width="21" height="24" alt="" aria-hidden="true"><span class="counter__val counter__val--gem">0</span><i class="counter__dot" aria-hidden="true"></i></span>
+      </div>
+
+      <!-- Кнопки и три группы лежат в одном блоке: в макете это кадр с общим
+           зазором 40 между ними, а не отдельные отступы у каждой группы. -->
+      <div class="home">
+        <nav class="actions">
+          <button type="button">
+            <img src="img/act-transfer.png" width="22" height="21" alt="">
+            Köçürmələr
+          </button>
+          <button type="button">
+            <img src="img/act-pay.png" width="23" height="20" alt="">
+            Ödənişlər
+          </button>
+          <button type="button">
+            <img src="img/act-history.png" width="24" height="23" alt="">
+            Tarixçə
+          </button>
+        </nav>
+
+        <section class="group">
+          <h2>Kartlar və hesablar <button type="button" class="group__add" aria-label="Əlavə et">
+            <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 0v10M0 5h10"/></svg>
+          </button></h2>
+          <a class="row" href="#">
+            <img class="plastic" src="img/card-red.png" width="65" height="44" alt="VISA 9858">
+            <span class="row__text">
+              <b class="row__sum row__sum--wide"><span class="row__int">0</span><span class="row__comma">,</span><span class="row__dec">62</span><span class="row__gap">&nbsp;</span><span class="row__cur">₼</span></b>
+              <span class="row__sub">VISA CLASSIC Debet</span>
+            </span>
+          </a>
+          <a class="row" href="#s-cardhome" data-go="s-cardhome">
+            <img class="plastic" src="img/card-dark.png" width="65" height="44" alt="VISA 8941">
+            <span class="row__text">
+              <b class="row__sum"><span class="row__int">8 000</span><span class="row__comma">,</span><span class="row__dec">62</span><span class="row__gap">&nbsp;</span><span class="row__cur">₼</span></b>
+              <span class="row__sub">Birbank Debet</span>
+            </span>
+          </a>
+        </section>
+
+        <!-- У «Digər məhsullar» в макете плюса нет — только заголовок -->
+        <section class="group group--tight">
+          <h2>Digər məhsullar</h2>
+          <a class="row row--tile" href="#">
+            <span class="tile"><img src="img/bakikart.png" width="38" height="25" alt=""></span>
+            <span class="row__title">BakıKart</span>
+          </a>
+        </section>
+
+        <section class="group group--empty">
+          <h2 class="h2--tight">Əmanətlər <button type="button" class="group__add" aria-label="Əlavə et">
+            <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 0v10M0 5h10"/></svg>
+          </button></h2>
+        </section>
+      </div>
+
+    </div>
+
+    <nav class="tabbar">
+      <button type="button" class="is-on">
+        <img src="img/tab-main.png" width="32" height="25" alt="">
+        <span>Əsas</span>
+      </button>
+      <button type="button">
+        <img src="img/tab-gifts.svg" width="32" height="24" alt="">
+        <span>Bizdən sizə</span>
+      </button>
+      <button type="button">
+        <img src="img/tab-qr.svg" width="32" height="24" alt="">
+        <span>Bir Pay QR</span>
+      </button>
+      <button type="button">
+        <img src="img/tab-pay.svg" width="32" height="24" alt="">
+        <span>Ödənişlər</span>
+      </button>
+      <button type="button">
+        <img src="img/tab-more.svg" width="32" height="24" alt="">
+        <span>Daha çox</span>
+      </button>
+    </nav>
+  </section>
+
+  <!-- ── 5. Карта: обзор, операции ── -->
+  <section class="screen screen--cardhome" id="s-cardhome">
+    <header class="navbar">
+      <button type="button" class="icon-btn nav__back" data-go="s-main" aria-label="Geri">
+        <svg viewBox="0 0 26 26"><path d="M17 5l-8 7.5 8 7.5"/></svg>
+      </button>
+      <button type="button" class="icon-btn nav__eye" aria-label="Məlumatları gizlət">
+        <img src="img/tb-eye.png" width="25" height="21" alt="">
+      </button>
+      <h1>Birbank Debet</h1>
+      <button type="button" class="icon-btn nav__share" aria-label="Paylaş">
+        <img src="img/nav-share.svg" width="25" height="23" alt="">
+      </button>
+    </header>
+
+    <div class="ch__scroll">
+      <!-- Пластик ведёт на реквизиты — так же, как «Kart detalları» в приложении -->
+      <a class="bigcard" href="#s-card" data-open-card="s-card" data-go="s-card">
+        <img src="img/card-big.png" width="168" height="97" alt="Birbank Debet • 8941 — Kart detalları">
+      </a>
+
+      <p class="ch__balance">8 000,<small>62 ₼</small></p>
+
+      <nav class="actions actions--card">
+        <button type="button">
+          <img src="img/ch-cash.png" width="26" height="18" alt="">
+          Köçür
+        </button>
+        <button type="button">
+          <img src="img/ch-wallet.png" width="24" height="20" alt="">
+          Ödənişlər
+        </button>
+        <button type="button">
+          <span class="ch__ico"><svg class="ch__plus" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 1v20M1 11h20"/></svg></span>
+          Balansı artır
+        </button>
+      </nav>
+
+      <section class="history">
+        <h2 class="history__sum">Sentyabr ayı üzrə xərclənib: 44 652<small>,75</small><small class="cur"> ₼</small></h2>
+        <p class="history__day">Dünən</p>
+
+        <div class="tx">
+          <span class="tx__mark" aria-hidden="true"></span>
+          <span class="tx__text">
+            <b>Köçürməni alan <i class="dot"></i></b>
+            <b>HƏMİD P******</b>
+            <span>1:42 <i class="dot"></i> Köçürmələr</span>
+          </span>
+          <span class="tx__amt">300<span class="tx__cur"> ₼</span></span>
+        </div>
+        <div class="tx">
+          <span class="tx__mark" aria-hidden="true"></span>
+          <span class="tx__text">
+            <b>Köçürməni alan <i class="dot"></i></b>
+            <b>HƏMİD P******</b>
+            <span>1:36 <i class="dot"></i> Köçürmələr</span>
+          </span>
+          <span class="tx__amt">500<span class="tx__cur"> ₼</span></span>
+        </div>
+        <div class="tx">
+          <span class="tx__mark" aria-hidden="true"></span>
+          <span class="tx__text">
+            <b>Köçürməni alan <i class="dot"></i></b>
+            <b>EMİN İ**********</b>
+            <span>1:35 <i class="dot"></i> Köçürmələr</span>
+          </span>
+          <span class="tx__amt">100,<span class="tx__dec">77</span><span class="tx__cur"> ₼</span></span>
+        </div>
+
+        <a class="history__more" href="#s-history" data-go="s-history">Ödənişlərin tarixçəsi</a>
+      </section>
+    </div>
+  </section>
+
+  <!-- ── 6. История операций ── -->
+  <section class="screen screen--history" id="s-history">
+    <header class="navbar">
+      <button type="button" class="icon-btn nav__back" data-go="s-cardhome" aria-label="Geri">
+        <svg viewBox="0 0 26 26"><path d="M17 5l-8 7.5 8 7.5"/></svg>
+      </button>
+      <button type="button" class="icon-btn nav__eye" aria-label="Məbləğləri gizlət">
+        <img src="img/tb-eye.png" width="25" height="21" alt="">
+      </button>
+      <h1>Tarixçə</h1>
+      <span class="nav__tools">
+        <button type="button" class="icon-btn" aria-label="Çıxarış">
+          <img src="img/hx-doc.svg" width="25" height="25" alt="">
+        </button>
+        <button type="button" class="icon-btn" aria-label="Axtar">
+          <img src="img/hx-search.svg" width="36" height="36" alt="">
+        </button>
+      </span>
+    </header>
+
+      <!-- Фильтры уезжают за правый край и прокручиваются вбок, как в макете -->
+    <div class="filters">
+      <div class="chips chips--sel">
+        <button type="button" class="chip chip--sel" data-sheet="s-dates">
+          <img class="chip__ico" src="img/hx-cal.svg" width="21" height="23" alt="">
+          <span data-range>Sentyabr</span>
+          <img class="chip__chev" src="img/hx-chev.svg" width="22" height="22" alt="">
+        </button>
+        <button type="button" class="chip chip--sel">
+          <img class="chip__ico" src="img/hx-card.svg" width="22" height="18" alt="">
+          <span>Bütün məhsul</span>
+          <img class="chip__chev" src="img/hx-chev.svg" width="22" height="22" alt="">
+        </button>
+      </div>
+      <div class="chips chips--sum">
+        <button type="button" class="chip chip--sum">
+          <img class="chip__badge" src="img/hx-out.png" width="28" height="28" alt="">
+          <span class="chip__lbl">Xərc:</span>
+          <span class="chip__val">13 412,<small>07 ₼</small></span>
+        </button>
+        <button type="button" class="chip chip--sum">
+          <img class="chip__badge" src="img/hx-in.png" width="28" height="28" alt="">
+          <span class="chip__lbl">Mədaxil:</span>
+          <span class="chip__val">11 344,<small>17 ₼</small></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="hx__scroll">
+
+      <section class="hxday" data-day="17">
+        <h2 class="hx__day">Dünən</h2>
+        <div class="hx" data-amt="-300">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • HƏMİD P******</b>
+            <span>1:42 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>300 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-500">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • HƏMİD P******</b>
+            <span>1:36 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>500 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-100.77">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • EMİN İ**********</b>
+            <span>1:35 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>100,<span class="hx__dec">77</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-110">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • RİAD H**********</b>
+            <span>1:33 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>110 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-70">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ROMAN K***</b>
+            <span>1:27 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>70 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-200">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • YASİN O*****</b>
+            <span>1:25 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>200 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-150">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • KAMİLƏ Ş**********</b>
+            <span>1:25 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>150 ₼</b>
+          </span>
+        </div>
+      </section>
+      <section class="hxday" data-day="14">
+        <h2 class="hx__day">14 sentyabr</h2>
+        <div class="hx" data-amt="-1000">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • RÖVŞƏN I*********</b>
+            <span>23:21 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>1 000 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-60">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • SƏBUHİ R*****</b>
+            <span>22:31 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>60 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-150">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • FƏRHAD K*********</b>
+            <span>22:25 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>150 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-115">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Rabitəbank • 6745</b>
+            <span>22:08 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>115 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-600">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ÜLVİ T*****</b>
+            <span>22:03 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>600 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-500">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • YUSİF Y********</b>
+            <span>21:34 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>500 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-600">
+          <img class="hx__mark" src="img/mk-pasha.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Pashabank • 1075</b>
+            <span>21:31 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>600 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-50">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • NİCAT G******</b>
+            <span>21:20 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>50 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-60">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • LALƏ C*******</b>
+            <span>21:11 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>60 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-28">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • EHTİRAM Ü****</b>
+            <span>20:56 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>28 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short hx--in" data-amt="3204.21">
+          <img class="hx__mark" src="img/mk-mpay.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Mpay</b>
+            <span>20:54 • Maliyyə</span>
+          </span>
+          <span class="hx__sum">
+            <b>+3 204,<span class="hx__dec">21</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--in" data-amt="470">
+          <img class="hx__mark" src="img/mk-swap.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Hesabların arasında köçürmə</b>
+            <span>20:31 • Hesablarım arasında</span>
+          </span>
+          <span class="hx__sum">
+            <b>+470 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-470">
+          <img class="hx__mark" src="img/mk-swap.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Hesabların arasında köçürmə</b>
+            <span>20:31 • Hesablarım arasında</span>
+          </span>
+          <span class="hx__sum">
+            <b>470 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-81">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ULVİYYƏ P******</b>
+            <span>19:37 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>81 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-500">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • RƏŞAD Q****</b>
+            <span>19:27 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>500 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-70">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • FUAD V******</b>
+            <span>19:08 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>70 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short hx--in" data-amt="470">
+          <img class="hx__mark" src="img/mk-abb.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Koçürməni alan ABB • 4567</b>
+            <span>20:31 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>+470 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-250">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • CEYHUN L****</b>
+            <span>18:31 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>250 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-200">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • LEYLA B*******</b>
+            <span>18:06 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>200 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-179.64">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • GÜLNAR F******</b>
+            <span>17:59 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>179,<span class="hx__dec">64</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-86">
+          <img class="hx__mark" src="img/mk-leo.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Leobank • 3145</b>
+            <span>17:52 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>86 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-800">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • NƏRİMAN X*****</b>
+            <span>17:46 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>800 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-50">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • CƏLAL A*********</b>
+            <span>17:28 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>50 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-500">
+          <img class="hx__mark" src="img/mk-uni.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Unibank • 2886</b>
+            <span>17:17 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>500 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short hx--in" data-amt="2182.43">
+          <img class="hx__mark" src="img/mk-mon.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>MilliÖn mədaxil</b>
+            <span>02:31 • Maliyyə</span>
+          </span>
+          <span class="hx__sum">
+            <b>+2 182,<span class="hx__dec">43</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-522.36">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • CAVİD Ö*******</b>
+            <span>16:15 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>522,<span class="hx__dec">36</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--in" data-amt="398">
+          <img class="hx__mark" src="img/mk-swap.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Hesabların arasında köçürmə</b>
+            <span>15:52 • Hesablarım arasında</span>
+          </span>
+          <span class="hx__sum">
+            <b>+398 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-398">
+          <img class="hx__mark" src="img/mk-swap.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Hesabların arasında köçürmə</b>
+            <span>15:52 • Hesablarım arasında</span>
+          </span>
+          <span class="hx__sum">
+            <b>398 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-1000">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • KAMAL O******</b>
+            <span>15:45 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>1 000 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-50">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • AYSEL B*****</b>
+            <span>15:40 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>50 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-300">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ZAUR P*****</b>
+            <span>14:56 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>300 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short hx--in" data-amt="1091.22">
+          <img class="hx__mark" src="img/mk-mpay.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Mpay</b>
+            <span>14:16 • Maliyyə</span>
+          </span>
+          <span class="hx__sum">
+            <b>+1 091,<span class="hx__dec">22</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-110">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • NURLANƏ X*********</b>
+            <span>13:39 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>110 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-35">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ELVİN U********</b>
+            <span>12:38 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>35 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--in" data-amt="169.92">
+          <img class="hx__mark" src="img/mk-swap.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Hesabların arasında köçürmə</b>
+            <span>12:13 • Hesablarım arasında</span>
+          </span>
+          <span class="hx__sum">
+            <b>+169,<span class="hx__dec">92</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-169.92">
+          <img class="hx__mark" src="img/mk-swap.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Hesabların arasında köçürmə</b>
+            <span>12:13 • Hesablarım arasında</span>
+          </span>
+          <span class="hx__sum">
+            <b>169,<span class="hx__dec">92</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-990">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ORXAN L*********</b>
+            <span>11:27 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>990 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-260">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • KAMRAN J********</b>
+            <span>10:57 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>260 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--in" data-amt="992.01">
+          <img class="hx__mark" src="img/mk-rabite.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni göndərən Rabitəbank • 3648</b>
+            <span>10:56 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>+992,<span class="hx__dec">01</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--in" data-amt="496.01">
+          <img class="hx__mark" src="img/mk-rabite.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni göndərən Rabitəbank • 1935</b>
+            <span>10:56 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>+496,<span class="hx__dec">01</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-40">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • GÜNEL I*********</b>
+            <span>10:38 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>40 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-140">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • RAMİL Ç******</b>
+            <span>10:01 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>140 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-400">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ASİM P*******</b>
+            <span>09:39 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>400 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short" data-amt="-250">
+          <img class="hx__mark" src="img/mk-abb.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Koçürməni alan ABB • 4018</b>
+            <span>01:34 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>250 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-93">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ARZU V******</b>
+            <span>08:53 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>93 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-200">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ZEYNƏB X******</b>
+            <span>08:44 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>200 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short hx--in" data-amt="1289.62">
+          <img class="hx__mark" src="img/mk-mpay.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Mpay</b>
+            <span>08:33 • Maliyyə</span>
+          </span>
+          <span class="hx__sum">
+            <b>+1 289,<span class="hx__dec">62</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-100">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • FƏRİD Ə****</b>
+            <span>08:26 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>100 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-30">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • NİGAR S*******</b>
+            <span>08:15 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>30 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-50">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • KƏNAN S********</b>
+            <span>08:10 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>50 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-50">
+          <img class="hx__mark" src="img/mk-leo.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Leobank • 4872</b>
+            <span>07:59 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>50 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-50">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • TÜRKAN P****</b>
+            <span>07:48 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>50 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-150">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • TOĞRUL Y*********</b>
+            <span>07:44 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>150 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-201.62">
+          <img class="hx__mark" src="img/mk-leo.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Leobank • 4872</b>
+            <span>07:10 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>201,<span class="hx__dec">62</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-50">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • İLKİN J*********</b>
+            <span>04:33 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>50 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-300">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • VÜQAR O******</b>
+            <span>04:25 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>300 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--in" data-amt="995">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni göndərən • GÜNDÜZ T****</b>
+            <span>04:23 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>+995 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-75">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • AYNUR N********</b>
+            <span>03:21 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>75 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-200">
+          <img class="hx__mark" src="img/mk-pasha.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Pashabank • 3682</b>
+            <span>03:14 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>200 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-50">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • MEHRİBAN Ç********</b>
+            <span>03:05 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>50 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-350">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • İLQAR Ö*****</b>
+            <span>03:01 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>350 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-150">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ZİYA İ******</b>
+            <span>02:48 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>150 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-4.45">
+          <img class="hx__mark" src="img/mk-leo.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Leobank • 2039</b>
+            <span>02:23 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>4,<span class="hx__dec">45</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-445">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ANAR X*******</b>
+            <span>02:19 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>445 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short hx--in" data-amt="55.75">
+          <img class="hx__mark" src="img/mk-mpay.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Mpay</b>
+            <span>01:41 • Maliyyə</span>
+          </span>
+          <span class="hx__sum">
+            <b>+55,<span class="hx__dec">75</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-86">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • AYTƏN H********</b>
+            <span>01:30 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>86 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-800">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • SEVİNC Y******</b>
+            <span>00:50 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>800 ₼</b>
+          </span>
+        </div>
+      </section>
+      <section class="hxday" data-day="11">
+        <h2 class="hx__day">11 sentyabr</h2>
+        <div class="hx hx--in" data-amt="776.1">
+          <img class="hx__mark" src="img/mk-swap.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Hesabların arasında köçürmə</b>
+            <span>20:12 • Hesablarım arasında</span>
+          </span>
+          <span class="hx__sum">
+            <b>+776,<span class="hx__dec">10</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-776.1">
+          <img class="hx__mark" src="img/mk-swap.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Hesabların arasında köçürmə</b>
+            <span>20:12 • Hesablarım arasında</span>
+          </span>
+          <span class="hx__sum">
+            <b>776,<span class="hx__dec">10</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-500">
+          <img class="hx__mark" src="img/mk-rabite.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Rabitəbank • 7028</b>
+            <span>15:26 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>500 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-300">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • AYNUR H*******</b>
+            <span>15:50 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>300 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-1000">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • İKRAM Ə******</b>
+            <span>15:58 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>1 000 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-1000">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • İKRAM Ə******</b>
+            <span>15:40 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>1 000 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-600">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • İKRAM Ə******</b>
+            <span>15:53 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>600 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-1000">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • İKRAM Ə******</b>
+            <span>15:30 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>1 000 ₼</b>
+          </span>
+        </div>
+      </section>
+      <section class="hxday" data-day="10">
+        <h2 class="hx__day">10 sentyabr</h2>
+        <div class="hx" data-amt="-1">
+          <img class="hx__mark" src="img/mk-uni.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ULVİYYƏ V******</b>
+            <span>23:56 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>1 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-100">
+          <img class="hx__mark" src="img/mk-leo.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Leobank • 3145</b>
+            <span>23:16 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>100 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short" data-amt="-1.23">
+          <img class="hx__mark" src="img/mk-abb.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Koçürməni alan ABB • 4018</b>
+            <span>23:10 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>1,<span class="hx__dec">23</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short" data-amt="-123">
+          <img class="hx__mark" src="img/mk-abb.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Koçürməni alan ABB • 4018</b>
+            <span>23:10 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>123 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short hx--in" data-amt="2774">
+          <img class="hx__mark" src="img/mk-mpay.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Mpay</b>
+            <span>23:04 • Maliyyə</span>
+          </span>
+          <span class="hx__sum">
+            <b>+2 774 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-300">
+          <img class="hx__mark" src="img/mk-leo.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Leobank • 9187</b>
+            <span>23:01 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>300 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-500">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • NADİR Ş*****</b>
+            <span>22:17 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>500 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-56">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ELVİN Ç********</b>
+            <span>15:51 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>56 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short" data-amt="-25">
+          <img class="hx__mark" src="img/mk-abb.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Koçürməni alan ABB • 3028</b>
+            <span>14:54 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>25 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-1">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ORXAN V******</b>
+            <span>14:53 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>1 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-31">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ZEYNƏB U*********</b>
+            <span>14:22 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>31 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short" data-amt="-25">
+          <img class="hx__mark" src="img/mk-abb.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Koçürməni alan ABB • 3028</b>
+            <span>12:30 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>25 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-45">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ANAR B****</b>
+            <span>12:19 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>45 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-90">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • TURAL Ş*****</b>
+            <span>11:46 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>90 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-27">
+          <img class="hx__mark" src="img/mk-leo.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Leobank • 1473</b>
+            <span>11:17 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>27 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-1">
+          <img class="hx__mark" src="img/mk-uni.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Unibank • 2948</b>
+            <span>10:17 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>1 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-100">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • NİGAR E*****</b>
+            <span>09:23 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>100 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-26">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • RƏŞAD M*********</b>
+            <span>07:38 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>26 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-300">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ARZU Ü******</b>
+            <span>07:36 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>300 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-1">
+          <img class="hx__mark" src="img/mk-leo.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Leobank • 4739</b>
+            <span>05:10 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>1 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-100">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • SAHİB L******</b>
+            <span>05:02 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>100 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-250">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • RAMİL G*****</b>
+            <span>04:57 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>250 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-100">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • GÜLNAR İ********</b>
+            <span>04:50 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>100 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short hx--in" data-amt="1492.5">
+          <img class="hx__mark" src="img/mk-mon.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>MilliÖn mədaxil</b>
+            <span>02:31 • Maliyyə</span>
+          </span>
+          <span class="hx__sum">
+            <b>+1 492,<span class="hx__dec">50</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-0.38">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • SAMİR H******</b>
+            <span>01:45 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>0,<span class="hx__dec">38</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-1000">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • AYDIN M********</b>
+            <span>01:24 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>1 000 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-35">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • NƏRMİN U*****</b>
+            <span>01:23 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>35 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-1000">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • ZAUR K******</b>
+            <span>01:15 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>1 000 ₼</b>
+          </span>
+        </div>
+      </section>
+      <section class="hxday" data-day="9">
+        <h2 class="hx__day">9 sentyabr</h2>
+        <div class="hx" data-amt="-0.28">
+          <img class="hx__mark" src="img/mk-leo.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Leobank • 3948</b>
+            <span>23:16 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>0,<span class="hx__dec">28</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-4">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • TURAL B*********</b>
+            <span>17:47 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>4 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-180">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • NİGAR O*********</b>
+            <span>16:54 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>180 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-30">
+          <img class="hx__mark" src="img/mk-uni.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan Unibank • 2886</b>
+            <span>16:05 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>30 ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-130">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • KAMRAN Ç*****</b>
+            <span>14:08 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>130 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short hx--in" data-amt="37.35">
+          <img class="hx__mark" src="img/mk-mon.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>MilliÖn mədaxil</b>
+            <span>20:31 • Maliyyə</span>
+          </span>
+          <span class="hx__sum">
+            <b>+37,<span class="hx__dec">35</span> ₼</b>
+          </span>
+        </div>
+        <div class="hx" data-amt="-458">
+          <img class="hx__mark" src="img/mk-bir.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Köçürməni alan • VÜQAR A****</b>
+            <span>10:07 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>458 ₼</b>
+          </span>
+        </div>
+        <div class="hx hx--short" data-amt="-2">
+          <img class="hx__mark" src="img/mk-abb.png" width="48" height="48" alt="">
+          <span class="hx__text">
+            <b>Koçürməni alan ABB • 5341</b>
+            <span>10:00 • Köçürmələr</span>
+          </span>
+          <span class="hx__sum">
+            <b>2 ₼</b>
+          </span>
+        </div>
+      </section>
+      <p class="hx__empty" hidden>Bu dövrdə əməliyyat yoxdur</p>
+    </div>
+  </section>
+
+  <!-- ── 7. Карта: реквизиты и безопасность ── -->
+  <section class="screen screen--card" id="s-card">
+    <header class="navbar">
+      <button type="button" class="icon-btn nav__back" data-go="s-cardhome" aria-label="Geri">
+        <img src="img/nav-back.svg" width="26" height="26" alt="">
+      </button>
+      <button type="button" class="icon-btn nav__eye" data-reveal aria-pressed="false" aria-label="Kart məlumatlarını göstər">
+        <img src="img/nav-eye.png" width="25" height="21" alt="">
+      </button>
+      <h1>Birbank Debet</h1>
+      <button type="button" class="icon-btn nav__share" aria-label="Paylaş">
+        <svg viewBox="0 0 25 23"><path d="M14 1h9v9"/><path d="M23 1l-9.5 9.5"/><path d="M19 14v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6"/></svg>
+      </button>
+    </header>
+
+    <div class="card-scroll">
+      <!-- Реквизиты. Тёмная плашка, как в приложении: на ней и номер,
+           и срок, и скрытый CVV. -->
+      <section class="creds">
+        <span class="creds__label" style="top:17px">Kartın adı</span>
+        <button type="button" class="creds__x" aria-label="Bağla">
+          <svg viewBox="0 0 13 13"><path d="M0 0l13 13M13 0L0 13"/></svg>
+        </button>
+
+        <span class="creds__name">Birbank Debet</span>
+        <button type="button" class="creds__pen" aria-label="Adı dəyiş">
+          <svg viewBox="0 0 15 15"><path d="M1 14l3.2-.8L14 3.4a1.7 1.7 0 0 0-2.4-2.4L1.8 10.8Z"/></svg>
+        </button>
+
+        <span class="creds__label" style="top:68px">Kart nömrəsi</span>
+        <span class="creds__num">
+          <b class="creds__off">&#42;&#42;&#42;&#42;&nbsp; &#42;&#42;&#42;&#42;&nbsp; &#42;&#42;&#42;&#42;&nbsp; 8941</b>
+          <b class="creds__on">4169 7388 2478 8941</b>
+        </span>
+        <button type="button" class="creds__copy creds__copy--num" aria-label="Nömrəni kopyala">
+          <svg viewBox="0 0 18 20"><rect x="5" y="1" width="12" height="13" rx="3.4"/><rect class="on-card" x="1" y="6" width="12" height="13" rx="3.4"/></svg>
+        </button>
+
+        <span class="creds__label" style="top:120px">İstifadə müddəti</span>
+        <span class="creds__exp">
+          <b class="creds__off">&#42;&#42;/&#42;&#42;</b>
+          <b class="creds__on">02/29</b>
+        </span>
+        <button type="button" class="creds__copy creds__copy--exp" aria-label="Tarixi kopyala">
+          <svg viewBox="0 0 18 20"><rect x="5" y="1" width="12" height="13" rx="3.4"/><rect class="on-card" x="1" y="6" width="12" height="13" rx="3.4"/></svg>
+        </button>
+
+        <span class="creds__pill" aria-hidden="true"></span>
+        <span class="creds__cvv">CVV</span>
+        <button type="button" class="creds__cvveye" aria-label="CVV göstər">
+          <svg viewBox="0 0 24 20"><path d="M12 2c6 0 11 6 11 8s-5 8-11 8S1 12 1 10 6 2 12 2Z"/><circle cx="12" cy="10" r="3.4"/><path d="M3 19L21 1"/></svg>
+        </button>
+      </section>
+
+      <aside class="warn" hidden>
+      <span class="warn__badge" aria-hidden="true">!</span>
+      <p class="warn__text">Kart məlumatlarınızı kənar şəxslərlə paylaşmayın, etibarsız saytlarda daxil etməyin</p>
+      <button type="button" class="warn__close" data-warn-close aria-label="Bağla">
+        <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M0 0l14 14M14 0L0 14"/></svg>
+      </button>
+    </aside>
+
+      <h2 class="card-group">Təhlükəsizlik</h2>
+      <nav class="menu">
+        <button type="button">
+          <span class="menu__tile"><img src="img/sec-lock.png" width="19" height="20" alt=""></span>
+          <span>Kartı blokla</span>
+          <img class="menu__go" src="img/menu-go-lg.svg" width="32" height="30" alt="">
+        </button>
+        <button type="button">
+          <span class="menu__tile"><img src="img/sec-3ds.png" width="20" height="22" alt=""></span>
+          <span>3D Secure</span>
+          <img class="menu__go" src="img/menu-go-lg.svg" width="32" height="30" alt="">
+        </button>
+        <button type="button">
+          <span class="menu__tile"><img src="img/sec-phone.png" width="20" height="25" alt=""></span>
+          <span>Google Pay tənzimləmələri</span>
+          <img class="menu__go" src="img/menu-go-lg.svg" width="32" height="30" alt="">
+        </button>
+        <button type="button">
+          <span class="menu__tile"><img src="img/sec-key.png" width="20" height="22" alt=""></span>
+          <span>PIN-i dəyiş</span>
+          <img class="menu__go" src="img/menu-go-lg.svg" width="32" height="30" alt="">
+        </button>
+        <button type="button">
+          <span class="menu__tile"><img src="img/sec-reset.png" width="20" height="19" alt=""></span>
+          <span>PİN cəhdlərini sıfırla</span>
+          <img class="menu__go" src="img/menu-go-lg.svg" width="32" height="30" alt="">
+        </button>
+        <button type="button">
+          <span class="menu__tile"><img src="img/sec-limit.png" width="20" height="14" alt=""></span>
+          <span>Xərclər üzrə limitlər</span>
+          <img class="menu__go" src="img/menu-go-lg.svg" width="32" height="30" alt="">
+        </button>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ── Баннер бонусной категории ── -->
+  <div class="sheet sheet--bonus" id="s-bonus" hidden>
+    <div class="sheet__veil" data-sheet-close></div>
+    <div class="sheet__body">
+      <img class="bonus__banner" src="img/bonus-banner.png" alt="Bir kateqoriya seçərək hər yerdə bonus qazan" draggable="false">
+      <div class="bonus__text">
+        <h2 class="bonus__title">Bir kliklə bonus kateqoriyasını aktivləşdir</h2>
+        <img class="bonus__check" src="img/bonus-check.svg" width="28" height="28" alt="" draggable="false">
+        <p class="bonus__body">"Bütün ödənişlər" bonus kateqoriyasını elə indi aktivləşdir və kartınla market, kafe, restoran, mobil və kommunal ödənişlərindən bonuslar qazanmağa başla.</p>
+        <button type="button" class="bonus__ok" data-sheet-close>Ok</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Календарь: выбор периода ── -->
+  <div class="sheet" id="s-dates" hidden>
+    <div class="sheet__veil" data-sheet-close></div>
+    <div class="sheet__body">
+      <span class="sheet__grab" aria-hidden="true"></span>
+
+      <div class="cal__week">
+        <span>B.E</span><span>Ç.A</span><span>Ç</span><span>C.A</span><span>C.A</span><span>Ş</span><span>B</span>
+      </div>
+
+      <div class="cal__head">
+        <h3>Sentyabr</h3>
+        <button type="button" class="cal__all" data-month-all>Bütün ayı seç</button>
+      </div>
+      <div class="cal__grid" data-cal>
+        <span class="cal__gap"></span>
+        <button type="button" class="cal__day" data-day="1">1</button>
+        <button type="button" class="cal__day" data-day="2">2</button>
+        <button type="button" class="cal__day" data-day="3">3</button>
+        <button type="button" class="cal__day" data-day="4">4</button>
+        <button type="button" class="cal__day" data-day="5">5</button>
+        <button type="button" class="cal__day" data-day="6">6</button>
+        <button type="button" class="cal__day" data-day="7">7</button>
+        <button type="button" class="cal__day" data-day="8">8</button>
+        <button type="button" class="cal__day" data-day="9">9</button>
+        <button type="button" class="cal__day" data-day="10">10</button>
+        <button type="button" class="cal__day" data-day="11">11</button>
+        <button type="button" class="cal__day" data-day="12">12</button>
+        <button type="button" class="cal__day" data-day="13">13</button>
+        <button type="button" class="cal__day" data-day="14">14</button>
+        <button type="button" class="cal__day" data-day="15">15</button>
+        <button type="button" class="cal__day" data-day="16">16</button>
+        <button type="button" class="cal__day" data-day="17">17</button>
+        <button type="button" class="cal__day" data-day="18">18</button>
+        <button type="button" class="cal__day is-off" data-day="19">19</button>
+        <button type="button" class="cal__day is-off" data-day="20">20</button>
+        <button type="button" class="cal__day is-off" data-day="21">21</button>
+        <button type="button" class="cal__day is-off" data-day="22">22</button>
+        <button type="button" class="cal__day is-off" data-day="23">23</button>
+        <button type="button" class="cal__day is-off" data-day="24">24</button>
+        <button type="button" class="cal__day is-off" data-day="25">25</button>
+        <button type="button" class="cal__day is-off" data-day="26">26</button>
+        <button type="button" class="cal__day is-off" data-day="27">27</button>
+        <button type="button" class="cal__day is-off" data-day="28">28</button>
+        <button type="button" class="cal__day is-off" data-day="29">29</button>
+        <button type="button" class="cal__day is-off" data-day="30">30</button>
+      </div>
+
+      <div class="cal__head cal__head--off">
+        <h3>Oktyabr</h3>
+        <span class="cal__all">Bütün ayı seç</span>
+      </div>
+      <div class="cal__grid">
+        <span class="cal__gap"></span>
+        <span class="cal__gap"></span>
+        <span class="cal__gap"></span>
+        <span class="cal__day is-off">1</span>
+        <span class="cal__day is-off">2</span>
+        <span class="cal__day is-off">3</span>
+        <span class="cal__day is-off">4</span>
+      </div>
+
+      <button type="button" class="cal__go" data-sheet-close>Seç</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="app.js?v=1789687378"></script>
+</body>
+</html>
