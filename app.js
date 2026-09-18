@@ -159,6 +159,12 @@
       var el = rc.querySelector(sel);
       if (el) el.textContent = text;
     };
+    /* Знак банка берём у самой строки: у переводов на чужой банк он свой,
+       и в чеке стоит тот же, что в списке. */
+    var mark = rc.querySelector('.rc__mark img');
+    var rowMark = row.querySelector('.hx__mark');
+    if (mark && rowMark) mark.src = rowMark.getAttribute('src');
+
     put('.rc__who', d.rcWho);
     put('.rc__when', d.rcWhen);
     put('.rc__rrn', 'RRN: ' + d.rcRrn);
