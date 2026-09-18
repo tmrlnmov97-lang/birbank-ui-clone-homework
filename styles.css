@@ -9,6 +9,7 @@
   --ink: #2c2c31;
   --muted: #8a8a91;
   --line: #e6e7ea;
+  --dark: #33363c;         /* экран квитанции */
   --w: 390px;
   --h: 844px;
 }
@@ -760,7 +761,9 @@ body.is-ready .splash__mark {
     overflow: hidden;
     overscroll-behavior: none;
   }
-  html.is-splash, html.is-splash body { background: var(--red); }
+  html[data-chrome="s-splash"], html[data-chrome="s-splash"] body,
+  html[data-chrome="s-brands"], html[data-chrome="s-brands"] body { background: var(--red); }
+  html[data-chrome="s-qebz"], html[data-chrome="s-qebz"] body { background: var(--dark); }
   body {
     position: relative;
     height: 100dvh;
@@ -1500,10 +1503,25 @@ body.is-ready .splash__mark {
 
 /* ── Квитанция ──
    Кадр «Qəbz»: затемнение, белое место под чек с 160, кнопка на 772. */
-.screen--qebz { background: #33363c; }
+.screen--qebz { background: var(--dark); }
 .qb__title { position: absolute; left: 24px; top: 104px; margin: 0; height: 34px; line-height: 34px; font-size: 26px; font-weight: 700; color: #fff; }
 .qb__close { position: absolute; left: 346px; top: 110px; width: 18px; height: 18px; padding: 0; border: 0; background: none; cursor: pointer; }
 .qb__close svg { display: block; width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; }
+/* Кадр квитанции высокий: бланк кончается на 756, кнопка стоит на 772 и
+   упирается в самый низ 844. На телефоне столько не набирается — экран
+   начинается под строкой состояния и кончается над полосой «домой», и
+   кнопка уезжала за край. Поэтому содержимое живёт в своём кадре 390×844
+   и целиком ужимается по высоте экрана: пропорции остаются макетными.
+   Коэффициент считает fit() в app.js — scale() ждёт число, а не длину. */
+.qb {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--w);
+  height: var(--h);
+  transform-origin: top center;
+  transform: scale(var(--squeeze, 1));
+}
 /* Сам чек — выгрузка из макета */
 .qb__sheet { position: absolute; left: 20px; top: 190px; display: block; width: 350px; height: 566px; border-radius: 20px; background: #fff; }
 .qb__share {

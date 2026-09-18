@@ -3,13 +3,14 @@
 (function () {
   'use strict';
 
-  /* Фон документа идёт за экраном: на заставке красный, дальше цвет
-     страницы. Им же iOS красит строку состояния и поля вокруг кадра. */
+  /* Фон документа идёт за экраном: им iOS красит строку состояния и поля
+     вокруг кадра. Какой экран открыт — пишем на <html>, цвета подбирает CSS;
+     в theme-color то же значение нужно строкой. */
   var theme = document.querySelector('meta[name="theme-color"]');
+  var CHROME = { 's-splash': '#ff0040', 's-brands': '#ff0040', 's-qebz': '#33363c' };
   var paintChrome = function (id) {
-    var red = id === 's-splash' || id === 's-brands';
-    document.documentElement.classList.toggle('is-splash', red);
-    if (theme) theme.setAttribute('content', red ? '#ff0040' : '#f4f5f7');
+    document.documentElement.dataset.chrome = id;
+    if (theme) theme.setAttribute('content', CHROME[id] || '#f4f5f7');
   };
   paintChrome('s-splash');
 
@@ -92,6 +93,7 @@
       box.style.transform = '';
       box.style.height = '';
       root.style.removeProperty('--lift');
+      root.style.removeProperty('--squeeze');
       return;
     }
     /* По ширине тянем ровно в экран, а высоту кадру даём настоящую — тогда
@@ -104,6 +106,9 @@
     /* Клавиатура пароля разложена по координатам кадра 844: сдвигаем её
        на разницу, чтобы она осталась на том же расстоянии от низа. */
     root.style.setProperty('--lift', (h - 844) + 'px');
+    /* Квитанция низом упирается в 844 и растягиваться ей некуда: если кадру
+       досталось меньше, ужимаем её целиком — см. .qb в стилях. */
+    root.style.setProperty('--squeeze', Math.min(1, h / 844));
   };
   fit();
   addEventListener('resize', fit);
