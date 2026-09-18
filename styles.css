@@ -1407,7 +1407,7 @@ body.is-ready .splash__mark {
 
 /* ── Чек операции ──
    Отметки с кадра «Çek / əməliyyat» (390×844): шторка с 74, знак 96 на 176,
-   сумма на 356, блок birmarket с 514, карточки с 586 уходят под действия. */
+   сумма на 356, блок birmarket на 518, карточки с 586 уходят под действия. */
 .screen--receipt { background: var(--page); }
 .rc {
   position: absolute;
@@ -1424,85 +1424,79 @@ body.is-ready .splash__mark {
 .rc__when, .rc__rrn, .rc__title, .rc__sum, .rc__balance, .rc__card {
   left: 20px; width: 350px; margin: 0; text-align: center;
 }
-.rc__when { top: 38px; height: 23px; line-height: 23px; font-size: 17px; font-weight: 500; color: #2b2b30; }
-.rc__rrn { top: 63px; height: 18px; line-height: 18px; font-size: 13px; color: var(--muted); }
+.rc__when { top: 38px; height: 20px; line-height: 20px; font-size: 17px; font-weight: 500; color: #2b2b30; }
+.rc__rrn { top: 63px; height: 15px; line-height: 15px; font-size: 13px; color: var(--muted); }
 .rc__mark { left: 147px; top: 102px; width: 96px; height: 96px; }
 .rc__mark img { display: block; width: 96px; height: 96px; }
-/* Галочка подтверждения сидит в правом нижнем углу знака */
+/* Галочка подтверждения: белый ободок отделяет её от знака */
 .rc__ok {
   position: absolute;
-  left: 72px;
-  top: 64px;
+  left: 74px;
+  top: 74px;
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: #20bc51;
+  box-shadow: 0 0 0 4px #fff;
 }
-.rc__ok svg { width: 12px; height: 11px; fill: none; stroke: #fff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-.rc__title { top: 224px; height: 26px; line-height: 26px; font-size: 19px; font-weight: 500; color: #2b2b30; }
-/* Значок категории — зелёная плашка перед подписью */
+.rc__ok svg { width: 16px; height: 10px; fill: none; stroke: #fff; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; }
+.rc__title { top: 224px; height: 22px; line-height: 22px; font-size: 19px; font-weight: 500; color: #2b2b30; }
+/* Значок категории и подпись. В кадре строка стоит не по центру экрана,
+   а от 154 — повторяем как есть. */
 .rc__cat {
-  left: 0; right: 0; top: 257px; margin: 0;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  font-size: 15px; color: var(--muted);
+  left: 154px; top: 257px; margin: 0;
+  display: flex; align-items: center; gap: 6px;
+  height: 18px; line-height: 18px; font-size: 15px; color: var(--muted);
 }
-.rc__cat i { width: 16px; height: 11px; border-radius: 3px; background: #20bc51; }
-.rc__sum { top: 282px; height: 44px; line-height: 44px; font-size: 34px; font-weight: 700; color: #2b2b30; }
-.rc__balance { top: 332px; height: 20px; line-height: 20px; font-size: 15px; font-weight: 500; color: #2f80ed; text-decoration: none; }
-.rc__card { top: 364px; height: 19px; line-height: 19px; font-size: 14px; color: var(--muted); }
+.rc__cat i { display: block; width: 16px; height: 13px; }
+.rc__cat svg { display: block; width: 16px; height: 13px; fill: none; stroke: #20bc51; stroke-width: 1.4; }
+.rc__cat svg .on { fill: #20bc51; stroke: none; }
+.rc__cat svg .st { stroke: #fff; stroke-width: 1.9; }
+.rc__sum { top: 282px; height: 40px; line-height: 40px; font-size: 34px; font-weight: 700; color: #2b2b30; }
+.rc__balance { top: 332px; height: 18px; line-height: 18px; font-size: 15px; font-weight: 500; color: #2f80ed; text-decoration: none; }
+.rc__card { top: 364px; height: 16px; line-height: 16px; font-size: 14px; color: var(--muted); }
 
-.rc__eco { left: 0; right: 0; top: 418px; height: 100px; border-top: 1px solid #f1f2f4; }
-.rc__eco > * { position: absolute; }
-.rc__brand {
-  left: 20px; top: 22px;
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 20px; font-weight: 700; color: #e5197d;
-}
-.rc__brand svg { width: 14px; height: 14px; fill: none; stroke: #e5197d; stroke-width: 2; stroke-linejoin: round; }
+.rc__eco { left: 16px; top: 444px; width: 358px; height: 24px; display: flex; align-items: center; justify-content: space-between; }
+.rc__brand { display: block; width: 110px; height: 24px; }
 .rc__all {
-  right: 20px; top: 26px;
-  display: inline-flex; align-items: center; gap: 9px;
-  font-size: 15px; font-weight: 500; color: var(--brand); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 18px;
+  height: 18px; font-size: 15px; font-weight: 500; color: var(--brand); text-decoration: none;
 }
-.rc__all svg { width: 5px; height: 11px; fill: none; stroke: var(--brand); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.rc__partners { left: 20px; top: 60px; margin: 0; font-size: 15px; color: var(--muted); }
+.rc__all svg { width: 5px; height: 11px; fill: none; stroke: #959595; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.rc__partners { left: 20px; top: 478px; margin: 0; height: 18px; line-height: 18px; font-size: 15px; color: var(--muted); }
 
-/* Карточки товаров — пустые места, заполняются картинками */
 .rc__cards { left: 20px; top: 512px; display: flex; gap: 10px; }
-.rc__slot { flex: none; width: 166px; height: 196px; border-radius: 14px; background: #eff0f2; }
+.rc__slot { flex: none; display: block; width: 166px; height: 196px; border-radius: 14px; background: #eff0f2; object-fit: cover; }
 .rc__slot--peek { width: 18px; }
 /* Низ карточек растворяется в белом, поверх него стоят действия */
 .rc__fade {
-  left: 0; right: 0; top: 578px; height: 132px;
-  background: linear-gradient(rgba(255,255,255,0) 0%, rgba(255,255,255,.92) 55%, #fff 100%);
+  left: 0; right: 0; top: 544px; height: 297px;
+  background: linear-gradient(rgba(255,255,255,0) 5%, rgba(255,255,255,.51) 13%, #fff 27%, #fff 100%);
 }
 
-.rc__acts { left: 10px; top: 606px; display: flex; gap: 8.5px; }
+/* Блок действий: четыре колонки по 93 с нахлёстом −4, как в кадре */
+/* Кнопки не растягиваем по самой высокой: иначе содержимое центрируется
+   по вертикали и кружки у коротких подписей съезжают вниз. */
+.rc__acts { left: 16px; top: 608px; width: 356px; display: flex; align-items: flex-start; }
 .rc__acts button {
   flex: none;
-  width: 84px;
+  width: 93px;
+  margin-right: -4px;
   padding: 0;
   border: 0;
   background: none;
   font-family: inherit;
-  font-size: 12px;
-  line-height: 14px;
+  font-size: 13px;
+  line-height: 15px;
   color: #2b2b30;
   text-align: center;
   cursor: pointer;
 }
-.rc__ico {
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 12px;
-  border-radius: 50%;
-  background: var(--page);
-}
-.rc__ico svg { width: 22px; height: 24px; fill: none; stroke: var(--brand); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.rc__acts img { display: block; width: 56px; height: 56px; margin: 0 auto 14px; }
+/* Коробка подписи чуть шире кнопки — так строка переносится как в кадре */
+.rc__acts span { display: block; width: 96px; margin: 0 -1.5px; }
 
 /* ── Квитанция ──
    Кадр «Qəbz»: затемнение, белое место под чек с 160, кнопка на 772. */
@@ -1511,7 +1505,7 @@ body.is-ready .splash__mark {
 .qb__close { position: absolute; left: 346px; top: 110px; width: 18px; height: 18px; padding: 0; border: 0; background: none; cursor: pointer; }
 .qb__close svg { display: block; width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; }
 /* Место под сам чек — заполняется отдельно */
-.qb__sheet { position: absolute; left: 20px; top: 160px; width: 350px; height: 596px; border-radius: 20px; background: #fff; }
+.qb__sheet { position: absolute; left: 20px; top: 189px; width: 350px; height: 566px; border-radius: 20px; background: #fff; }
 .qb__share {
   position: absolute;
   left: 20px;

@@ -119,19 +119,10 @@
   });
 
   /* ── Строка операции открывает чек ──
-     Название, время и сумма подставляются из самой строки: иначе чек
-     показывал бы не ту операцию, по которой нажали. Дата и RRN — из кадра. */
+     Содержимое чека статичное, как в кадре: строка только открывает экран. */
   document.addEventListener('click', function (e) {
     var row = e.target.closest && e.target.closest('.hx[data-open]');
     if (!row) return;
-    var title = document.querySelector('[data-rc-title]');
-    var sum = document.querySelector('[data-rc-sum]');
-    var cat = document.querySelector('[data-rc-cat]');
-    var src = row.querySelector('.hx__text b');
-    var when = row.querySelector('.hx__text > span');
-    if (title && src) title.innerHTML = src.innerHTML;
-    if (sum) sum.innerHTML = row.querySelector('.hx__sum b').innerHTML;
-    if (cat && when) cat.textContent = (when.textContent.split('•')[1] || '').trim();
     show(row.dataset.open);
   });
 
