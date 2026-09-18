@@ -10,6 +10,7 @@
   --muted: #8a8a91;
   --line: #e6e7ea;
   --dark: #33363c;         /* экран квитанции */
+  --dim: #868788;          /* цвет страницы под затемнением шторки */
   --w: 390px;
   --h: 844px;
 }
@@ -764,6 +765,11 @@ body.is-ready .splash__mark {
   html[data-chrome="s-splash"], html[data-chrome="s-splash"] body,
   html[data-chrome="s-brands"], html[data-chrome="s-brands"] body { background: var(--red); }
   html[data-chrome="s-qebz"], html[data-chrome="s-qebz"] body { background: var(--dark); }
+  /* Под шторкой гаснет и полоса наверху — иначе она осталась бы светлее
+     притемнённого приложения. Гаснет с той же скоростью, что и само
+     затемнение, поэтому переход. */
+  html[data-chrome="dim"], html[data-chrome="dim"] body { background: var(--dim); }
+  html, body { transition: background-color .28s ease; }
   body {
     position: relative;
     height: 100dvh;
@@ -1412,9 +1418,8 @@ body.is-ready .splash__mark {
    Отметки с кадра «Çek / əməliyyat» (390×844): шторка с 74, знак 96 на 176,
    сумма на 356, блок birmarket на 518, карточки с 586 уходят под действия. */
 /* Чек не отдельный экран, а шторка: выезжает снизу поверх истории,
-   шапка «Tarixçə» остаётся видна над ней. Затемнения нет — на снимке
-   приложения фон за шторкой обычный. */
-.sheet--rc .sheet__veil { background: transparent; }
+   шапка «Tarixçə» остаётся видна над ней и гаснет под общим затемнением —
+   по нему и видно, что шторку можно увести вниз. */
 .rc {
   top: 74px;
   padding: 0;

@@ -8,9 +8,17 @@
      в theme-color то же значение нужно строкой. */
   var theme = document.querySelector('meta[name="theme-color"]');
   var CHROME = { 's-splash': '#ff0040', 's-brands': '#ff0040', 's-qebz': '#33363c' };
+  var DIM = '#868788';
+  /* Открытая шторка притемняет всё приложение, вместе с ним гаснут поля
+     и строка состояния — цвет экрана под ней уже не важен. */
+  var dimmed = false;
   var paintChrome = function (id) {
-    document.documentElement.dataset.chrome = id;
-    if (theme) theme.setAttribute('content', CHROME[id] || '#f4f5f7');
+    document.documentElement.dataset.chrome = dimmed ? 'dim' : id;
+    if (theme) theme.setAttribute('content', dimmed ? DIM : (CHROME[id] || '#f4f5f7'));
+  };
+  var repaintChrome = function () {
+    var on = document.querySelector('.screen.is-on');
+    paintChrome(on ? on.id : '');
   };
   paintChrome('s-splash');
 
@@ -411,6 +419,8 @@
   paintDays();
 
   var sheet = function (el, open, instant) {
+    dimmed = open;
+    repaintChrome();
     if (open) {
       /* Запоминаем, поверх какого экрана открылись: с чека можно уйти на
          квитанцию, и по возврату надо поднять и экран, и саму шторку. */
