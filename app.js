@@ -146,6 +146,7 @@
       var el = rc.querySelector(sel);
       if (el) el.textContent = text;
     };
+    put('.rc__who', d.rcWho);
     put('.rc__when', d.rcWhen);
     put('.rc__rrn', 'RRN: ' + d.rcRrn);
     put('.rc__sum', d.rcSum + ' \u20bc');
