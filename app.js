@@ -165,7 +165,12 @@
     var rowMark = row.querySelector('.hx__mark');
     if (mark && rowMark) mark.src = rowMark.getAttribute('src');
 
-    put('.rc__who', d.rcWho);
+    /* Заголовок чека слово в слово повторяет строку списка, только точка
+       между частями нарисована, а не набрана: делим по ней. */
+    var title = row.querySelector('.hx__text b');
+    var parts = (title ? title.textContent : '').split('\u2022');
+    put('.rc__pre', (parts[0] || '').trim());
+    put('.rc__who', (parts[1] || '').trim());
     put('.rc__when', d.rcWhen);
     put('.rc__rrn', 'RRN: ' + d.rcRrn);
     put('.rc__sum', d.rcSum + ' \u20bc');
