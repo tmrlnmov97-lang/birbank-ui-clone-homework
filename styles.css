@@ -1504,8 +1504,8 @@ body.is-ready .splash__mark {
 .qb__title { position: absolute; left: 24px; top: 104px; margin: 0; height: 34px; line-height: 34px; font-size: 26px; font-weight: 700; color: #fff; }
 .qb__close { position: absolute; left: 346px; top: 110px; width: 18px; height: 18px; padding: 0; border: 0; background: none; cursor: pointer; }
 .qb__close svg { display: block; width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; }
-/* Место под сам чек — заполняется отдельно */
-.qb__sheet { position: absolute; left: 20px; top: 189px; width: 350px; height: 566px; border-radius: 20px; background: #fff; }
+/* Сам чек — выгрузка из макета */
+.qb__sheet { position: absolute; left: 20px; top: 190px; display: block; width: 350px; height: 566px; border-radius: 20px; background: #fff; }
 .qb__share {
   position: absolute;
   left: 20px;
