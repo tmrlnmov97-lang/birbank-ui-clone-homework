@@ -21,6 +21,10 @@ html, body {
   font-family: 'Roboto', system-ui, sans-serif;
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
+  /* iOS подсвечивает любое нажатие серым прямоугольником. Свои отклики на
+     нажатие у нас заданы отдельно (.key:active, .menu button:active), эта
+     подсветка только мешает. */
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Рамка телефона. На настоящем телефоне она ни к чему — там экран и так
@@ -670,7 +674,6 @@ body.is-ready .splash__mark {
   font-size: 18px;
   font-weight: 500;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
 
 /* Дни недели отбиты линией — как в приложении */
@@ -971,7 +974,6 @@ body.is-ready .splash__mark {
   border: 0;
   background: none;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
 .warn__close svg { display: block; width: 14px; height: 14px; fill: none; stroke: #8c8c91; stroke-width: 1.8; stroke-linecap: round; }
 
