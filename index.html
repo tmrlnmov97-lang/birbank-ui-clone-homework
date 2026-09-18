@@ -22,7 +22,7 @@
 <meta name="apple-mobile-web-app-title" content="Birbank">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="icon" href="img/icon-192.png">
-<link rel="stylesheet" href="styles.css?v=1789744110">
+<link rel="stylesheet" href="styles.css?v=1789744963">
 </head>
 <body>
 
@@ -1526,27 +1526,10 @@
   </section>
 
 
-  <!-- ── 8. Чек операции ── -->
-  <section class="screen screen--receipt" id="s-receipt">
-    <header class="navbar">
-      <button type="button" class="icon-btn nav__back" data-go="s-history" aria-label="Geri">
-        <svg viewBox="0 0 26 26"><path d="M17 5l-8 7.5 8 7.5"/></svg>
-      </button>
-      <button type="button" class="icon-btn nav__eye" aria-label="Məbləğləri gizlət">
-        <img src="img/tb-eye.png" width="25" height="21" alt="">
-      </button>
-      <h1>Tarixçə</h1>
-      <span class="nav__tools">
-        <button type="button" class="icon-btn" aria-label="Çıxarış">
-          <img src="img/hx-doc.svg" width="25" height="25" alt="">
-        </button>
-        <button type="button" class="icon-btn" aria-label="Axtar">
-          <img src="img/hx-search.svg" width="36" height="36" alt="">
-        </button>
-      </span>
-    </header>
-
-    <div class="rc">
+  <!-- ── 8. Чек операции: шторка поверх истории ── -->
+  <div class="sheet sheet--rc" id="s-receipt" hidden>
+    <div class="sheet__veil" data-sheet-close></div>
+    <div class="sheet__body rc">
       <span class="rc__grab" aria-hidden="true"></span>
       <p class="rc__when">11 sentyabr, 15:37</p>
       <p class="rc__rrn">RRN: 26422988990</p>
@@ -1601,7 +1584,7 @@
         </button>
       </nav>
     </div>
-  </section>
+  </div>
 
   <!-- ── 9. Квитанция ── -->
   <section class="screen screen--qebz" id="s-qebz">
@@ -1793,6 +1776,6 @@
 
 </div>
 
-<script src="app.js?v=1789743318"></script>
+<script src="app.js?v=1789744963"></script>
 </body>
 </html>

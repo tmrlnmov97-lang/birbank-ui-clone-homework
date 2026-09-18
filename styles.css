@@ -623,8 +623,8 @@ body.is-ready .splash__mark {
   touch-action: none;
 }
 /* Пока тянут рукой, панель идёт за пальцем без собственной анимации */
-.sheet--bonus.is-dragging .sheet__body,
-.sheet--bonus.is-dragging .sheet__veil { transition: none; }
+.sheet.is-dragging .sheet__body,
+.sheet.is-dragging .sheet__veil { transition: none; }
 
 /* Уводим на свою высоту с запасом: высота задана в долях и получается
    дробной, а остаток в доли пикселя браузер рисует красной полоской
@@ -1408,13 +1408,13 @@ body.is-ready .splash__mark {
 /* ── Чек операции ──
    Отметки с кадра «Çek / əməliyyat» (390×844): шторка с 74, знак 96 на 176,
    сумма на 356, блок birmarket на 518, карточки с 586 уходят под действия. */
-.screen--receipt { background: var(--page); }
+/* Чек не отдельный экран, а шторка: выезжает снизу поверх истории,
+   шапка «Tarixçə» остаётся видна над ней. Затемнения нет — на снимке
+   приложения фон за шторкой обычный. */
+.sheet--rc .sheet__veil { background: transparent; }
 .rc {
-  position: absolute;
-  left: 0;
-  right: 0;
   top: 74px;
-  bottom: 0;
+  padding: 0;
   border-radius: 20px 20px 0 0;
   background: var(--card);
   overflow: hidden;

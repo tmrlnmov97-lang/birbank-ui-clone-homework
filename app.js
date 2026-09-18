@@ -115,15 +115,29 @@
     var go = e.target.closest && e.target.closest('[data-go]');
     if (!go) return;
     e.preventDefault();
+
+    /* Уходим из шторки на экран — снимаем её сразу, без выезда вниз:
+       иначе она едет поверх уже другого экрана. */
+    var from = go.closest('.sheet');
+    if (from) sheet(from, false, true);
+
+    /* Ведут не только на экраны: возврат с квитанции — на чек, а чек
+       теперь шторка. Поднимаем экран, под которым её открывали. */
+    var to = document.getElementById(go.dataset.go);
+    if (to && to.classList.contains('sheet')) {
+      if (to.dataset.under) show(to.dataset.under);
+      sheet(to, true);
+      return;
+    }
     show(go.dataset.go);
   });
 
   /* ── Строка операции открывает чек ──
-     Содержимое чека статичное, как в кадре: строка только открывает экран. */
+     Чек выезжает шторкой поверх истории, а не подменяет экран. */
   document.addEventListener('click', function (e) {
     var row = e.target.closest && e.target.closest('.hx[data-open]');
     if (!row) return;
-    show(row.dataset.open);
+    sheet(document.getElementById(row.dataset.open), true);
   });
 
   /* ── Карта раскрывается в реквизиты ──
@@ -369,13 +383,18 @@
   var resetDays = function () { picked = false; from = 1; to = TODAY; paintDays(); };
   paintDays();
 
-  var sheet = function (el, open) {
+  var sheet = function (el, open, instant) {
     if (open) {
+      /* Запоминаем, поверх какого экрана открылись: с чека можно уйти на
+         квитанцию, и по возврату надо поднять и экран, и саму шторку. */
+      var on = document.querySelector('.screen.is-on');
+      if (on) el.dataset.under = on.id;
       el.hidden = false;
       /* Кадр нужен, чтобы панель поехала снизу, а не появилась на месте */
       requestAnimationFrame(function () { el.classList.add('is-open'); });
     } else {
       el.classList.remove('is-open');
+      if (instant) { el.hidden = true; return; }
       setTimeout(function () { el.hidden = true; }, 320);
     }
   };
@@ -400,12 +419,14 @@
     if (all) { picked = true; from = 1; to = TODAY; paintDays(); }
   });
 
-  /* ── Баннер уводится вниз ──
+  /* ── Шторка уводится вниз ──
      Панель идёт за пальцем; увели больше чем на 80 — закрываем, меньше —
      возвращаем на место. Колесо вниз закрывает сразу: на десктопе жеста
-     нет, а «прокрутить вниз» просят то же самое. */
-  (function () {
-    var box = document.getElementById('s-bonus');
+     нет, а «прокрутить вниз» просят то же самое.
+     Так ведут себя те шторки, у которых наверху нарисована полоска-ручка:
+     баннер на главной и чек операции. */
+  ['s-bonus', 's-receipt'].forEach(function (id) {
+    var box = document.getElementById(id);
     if (!box) return;
     var panel = box.querySelector('.sheet__body');
     var start = null, shift = 0, dragging = false;
@@ -447,7 +468,7 @@
     box.addEventListener('wheel', function (e) {
       if (e.deltaY > 0) sheet(box, false);
     }, { passive: true });
-  })();
+  });
 
   /* ── Пароль ──
      Четыре кружка заполняются по нажатию, на четвёртой цифре пускаем
