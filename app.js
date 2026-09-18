@@ -133,11 +133,32 @@
   });
 
   /* ── Строка операции открывает чек ──
-     Чек выезжает шторкой поверх истории, а не подменяет экран. */
+     Чек выезжает шторкой поверх истории, а не подменяет экран. Шторка одна
+     на все операции: в кадрах чеки различаются только временем, номером RRN,
+     суммой и картинкой квитанции — их строка приносит с собой в data-rc-*. */
   document.addEventListener('click', function (e) {
     var row = e.target.closest && e.target.closest('.hx[data-open]');
     if (!row) return;
-    sheet(document.getElementById(row.dataset.open), true);
+
+    var rc = document.getElementById(row.dataset.open);
+    var d = row.dataset;
+    var put = function (sel, text) {
+      var el = rc.querySelector(sel);
+      if (el) el.textContent = text;
+    };
+    put('.rc__when', d.rcWhen);
+    put('.rc__rrn', 'RRN: ' + d.rcRrn);
+    put('.rc__sum', d.rcSum + ' \u20bc');
+
+    /* Квитанцию подставляем сразу, пока читают чек: к нажатию «Paylaş»
+       картинка успевает загрузиться и экран не открывается пустым. */
+    var qb = document.querySelector('#s-qebz .qb__sheet');
+    if (qb && d.rcQebz) {
+      qb.src = d.rcQebz;
+      qb.alt = 'Qəbz: ' + d.rcSum + ' \u20bc, RRN ' + d.rcRrn + ', ' + d.rcWhen;
+    }
+
+    sheet(rc, true);
   });
 
   /* ── Карта раскрывается в реквизиты ──
